@@ -31,23 +31,29 @@ const registerUser = asyncHandle(async (req, res) => {
     }
 
     console.log("🔎 Checking if user already exists...");
-    const existedUser = User.findOne({ $or: [{ username }, { email }] })
+    const existedUser = await User.findOne({ $or: [{ username }, { email }] })
     if (existedUser) {
         console.log("❌ User already exists:", existedUser);
         throw new ApiError(409, "User with email or username exist")
     }
     console.log("📁 Checking file paths...");
     const avatarLocalPath = req.files?.avatar[0]?.path;
-    const coverLocalPath = req.files?.coverImage[0]?.path;
+    // const coverLocalPath =  req.files?.coverImage[0]?.path;
 
     if (!avatarLocalPath) {
         console.log("❌ Avatar file missing");
         throw new ApiError(400, "Avatar file is required....")
     }
 
+    let coverImageLocalPath;
+    if(res.file && Array.isArray(req.files.coverImage)&& req.files.coverImage.length > 0)
+    {
+        coverImageLocalPath = req.files.coverImage[0].path
+    }
+
     const avatar = await uploadOnCloudinary(avatarLocalPath)
     console.log("✅ Avatar Uploaded:", avatar);
-    const coverImage = await uploadOnCloudinary(coverLocalPath)
+    const coverImage = await uploadOnCloudinary(coverImageLocalPath)
     console.log("✅ Cover Image Uploaded:", coverImage);
 
     if (!avatar) {
@@ -61,16 +67,17 @@ const registerUser = asyncHandle(async (req, res) => {
     const user = await User.create({
         fullname,
         avatar: avatar.url,
-        coverImage: coverImage || "",
+        coverImage: coverImage.url || "",
         email,
         password,
-        username: username.lowerCase()
+        username:username.toLowerCase()
     })
 
-    const createdUser = await User.findById(user.__id).select("-password -refreshToken")
+    const createdUser = await User.findById(user._id).select("-password -refreshToken")
     if (!createdUser) {
         throw new ApiError(500, "Something Went Wrong...")
     }
+    console.log("createdUser",createdUser)
     return res.status(201).json(
         new ApiResponse(200, createdUser, "User Registered Successfully...")
     );

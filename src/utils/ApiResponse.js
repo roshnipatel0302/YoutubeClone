@@ -1,14 +1,10 @@
-class ApiResponse extends Error {
-    constructor(
-        statuscode,
-        message = "Success",
-        data
-    ) {
-        super(message)
-        this.data = data
-        this.message = message
-        this.success = statuscode < 400
+class ApiResponse {
+    constructor(statuscode, message = "Success", data = null) {
+        this.statuscode = statuscode;  // ✅ Status code ko assign kiya
+        this.message = message;
+        this.data = data;
+        this.success = statuscode < 400;
     }
 }
 
-export { ApiResponse }
+export { ApiResponse };

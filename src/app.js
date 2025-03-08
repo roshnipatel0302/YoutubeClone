@@ -19,6 +19,14 @@ app.use(express.static(
 ))
 app.use(cookieParser())
 
-app.get()
+app.get("/", (req, res) => {
+    res.send("🚀 API is Running Successfully!");
+});
+
+//routes
+import userRouter from "./routes/user.route.js"
+
+//routes declaration
+app.use("/users",userRouter)
 
 export { app } 

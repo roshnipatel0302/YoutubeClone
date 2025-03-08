@@ -22,6 +22,14 @@ dotenv.config({
 
 
 connectDB()
+    .then(() => {
+        app.listen(process.env.PORT || 8000, () => {
+            console.log(`DB Connection Successfully.... ${process.env.PORT}`)
+        })
+    })
+    .catch((err) => {
+        console.log(err)
+    })
 
 // single File Change For Database Connectivity
 /*import express from "express"

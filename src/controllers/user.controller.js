@@ -346,6 +346,8 @@ const getWathHistory = asyncHandle(async (req, res) => {
     ])
 
     return res.status.json(new ApiResponse(200, user[0].watchHistory, "Watch History Fetched Successfully"));
+
+    
 })
 
 

@@ -155,7 +155,7 @@ const loginUser = asyncHandle(async (req, res) => {
 const logOutUser = asyncHandle(async (req, res) => {
     //find user
 
-    await User.findByIdAndDelete(req.User._id, { $set: { refreshToken: undefined } }, {
+    await User.findByIdAndDelete(req.User._id, { $unset: { refreshToken: 1 } }, {
         new: true
     })
 
@@ -347,7 +347,7 @@ const getWathHistory = asyncHandle(async (req, res) => {
 
     return res.status.json(new ApiResponse(200, user[0].watchHistory, "Watch History Fetched Successfully"));
 
-    
+
 })
 
 
